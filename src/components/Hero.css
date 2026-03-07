@@ -1,0 +1,43 @@
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  perspective: 1000px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-title {
+  z-index: 10;
+  font-family: 'Chewy', 'Shrikhand', cursive;
+  font-size: clamp(6rem, 15vw, 12rem);
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
+  
+  /* Original heavy 3D typography effect */
+  color: #F8ECD5; 
+  text-shadow: 
+    3px 3px 0px #C88C51,
+    6px 6px 0px #C88C51,
+    9px 9px 0px #C88C51,
+    12px 12px 0px #8B5A2B,
+    15px 15px 0px #8B5A2B,
+    18px 18px 0px #5C4033,
+    21px 21px 0px #5C4033;
+    
+  transform-style: preserve-3d;
+  will-change: transform;
+}
