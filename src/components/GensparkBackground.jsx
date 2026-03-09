@@ -42,6 +42,7 @@ export default function GensparkBackground() {
     );
 
     let W = window.innerWidth;
+    const isMobile = W < 768;
     let H = getFullHeight();
     let mx = W / 2, my = 0;
 
@@ -73,11 +74,13 @@ export default function GensparkBackground() {
       `;
     };
 
-    // Yarn SVG Generator
+    // Yarn SVG Generator - Optimized for Mobile
     let yarnColorIdx = 0;
     const yarnSVG = (size) => {
       const c = YARN_COLORS[yarnColorIdx++ % YARN_COLORS.length];
       const id = `gs-yg${yarnColorIdx}`;
+      // Disable expensive filter on mobile for performance
+      const filterAttr = isMobile ? '' : `filter="url(#fuzz${id})"`;
       return `
         <svg width="${size}" height="${size}" viewBox="0 0 100 100">
           <defs>
@@ -85,17 +88,18 @@ export default function GensparkBackground() {
               <stop offset="0%" stop-color="${c.hi}" />
               <stop offset="100%" stop-color="${c.base}" />
             </radialGradient>
+            ${!isMobile ? `
             <filter id="fuzz${id}" x="-20%" y="-20%" width="140%" height="140%">
               <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" />
               <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
-            </filter>
+            </filter>` : ''}
           </defs>
           
           <!-- Shadow -->
           <circle cx="52" cy="52" r="40" fill="rgba(0,0,0,0.15)" />
           
           <!-- Core Ball -->
-          <circle cx="50" cy="50" r="40" fill="url(#${id})" filter="url(#fuzz${id})" />
+          <circle cx="50" cy="50" r="40" fill="url(#${id})" ${filterAttr} />
           
           <!-- Complex Thread Wraps for depth -->
           <g stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none">
@@ -121,7 +125,7 @@ export default function GensparkBackground() {
 
     // Effects
     const spawnRippleAt = (x, y) => {
-      if (!containerRef.current) return;
+      if (!containerRef.current || isMobile) return; // Skip ripples on mobile for performance
       const r = document.createElement('div');
       r.className = 'gs-ripple';
       r.style.cssText = `left:${x}px;top:${y}px;width:70px;height:70px`;
@@ -131,7 +135,8 @@ export default function GensparkBackground() {
 
     const spawnSparkles = (x, y, color, count = 10) => {
       if (!containerRef.current) return;
-      for (let i = 0; i < count; i++) {
+      const finalCount = isMobile ? Math.floor(count / 2) : count;
+      for (let i = 0; i < finalCount; i++) {
         const s = document.createElement('div');
         s.className = 'gs-sparkle';
         const angle = rand(0, Math.PI * 2);
@@ -145,9 +150,9 @@ export default function GensparkBackground() {
 
     // No more catch text popups as requested
 
-    // Initialize Paws
+    // Initialize Paws - Adaptive Scaling
     const pawData = [];
-    const numPaws = 675; // Adjusted to a slightly more balanced high density
+    const numPaws = isMobile ? 125 : 675; // Drastically reduce paw count on mobile
     for (let i = 0; i < numPaws; i++) {
       const el = document.createElement('div');
       el.className = 'gs-paw';
@@ -168,13 +173,13 @@ export default function GensparkBackground() {
       pawData.push({ el, px, py, size, rot, color, baseOp, swipeCooldown: 0, alerted: false, dur, delay });
     }
 
-    // Initialize Yarn
+    // Initialize Yarn - Adaptive Scaling
     const preyList = [];
-    // Decreased yarn balls by 50% (12 -> 6)
-    for (let i = 0; i < 6; i++) {
+    const numYarn = isMobile ? 3 : 6; // Half the yarn on mobile
+    for (let i = 0; i < numYarn; i++) {
       const el = document.createElement('div');
       el.className = 'gs-prey';
-      const size = rand(50, 75); // Slightly larger for better detail
+      const size = rand(50, 75);
       el.innerHTML = yarnSVG(size);
       el.style.width = el.style.height = size + 'px';
       containerRef.current.appendChild(el);
@@ -185,7 +190,7 @@ export default function GensparkBackground() {
         vx: rand(-1.5, 1.5), 
         vy: rand(-1.5, 1.5), 
         wobble: rand(0, Math.PI * 2), 
-        wobbleSpeed: rand(0.015, 0.03), // Slower, more "weighted" wobble
+        wobbleSpeed: rand(0.015, 0.03), 
         mouseAttr: rand(0.012, 0.025), 
         catchCooldown: 0 
       });
