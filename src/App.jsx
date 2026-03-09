@@ -14,7 +14,6 @@ function App() {
   const [images, setImages] = useState([]);
   const [isInitializing, setIsInitializing] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   const fetchImages = async () => {
     setIsInitializing(true);
@@ -131,11 +130,12 @@ function App() {
             <FloatingGallery 
               images={images} 
               onImageClick={(url) => setSelectedImage(url)} 
-              onUpload={() => setIsEditorOpen(true)}
+              onUpload={handleUpload}
             />
           )}
 
-          {isEditorOpen && (
+          {/* The ScrapbookEditor component is removed as per the instruction to revert to direct upload logic. */}
+          {/* {isEditorOpen && (
             <ScrapbookEditor 
               onCancel={() => setIsEditorOpen(false)}
               onSave={(newUrl) => {
@@ -143,7 +143,7 @@ function App() {
                 setIsEditorOpen(false);
               }}
             />
-          )}
+          )} */}
 
           {/* Lightbox / Modal View */}
           {selectedImage && (
