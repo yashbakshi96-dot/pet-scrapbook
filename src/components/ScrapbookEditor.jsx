@@ -22,15 +22,17 @@ export default function ScrapbookEditor({ onCancel, onSave }) {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    // Initialize Fabric Canvas
+    // Initialize Fabric Canvas (Compatible with v7)
     const canvas = new fabric.Canvas(canvasRef.current, {
       width: 800,
       height: 600,
-      backgroundColor: '#fdfcf0', // Soft creamy paper color
+      backgroundColor: '#fdfcf0', 
     });
 
     // Add subtle paper texture
-    fabric.Image.fromURL(PAPER_TEXTURE, (img) => {
+    fabric.FabricImage.fromURL(PAPER_TEXTURE, {
+      crossOrigin: 'anonymous'
+    }).then((img) => {
       img.set({
         opacity: 0.1,
         selectable: false,
@@ -45,11 +47,11 @@ export default function ScrapbookEditor({ onCancel, onSave }) {
     fabricRef.current = canvas;
 
     // Custom controls styling
-    fabric.Object.prototype.transparentCorners = false;
-    fabric.Object.prototype.cornerColor = '#5c4033';
-    fabric.Object.prototype.cornerStyle = 'circle';
-    fabric.Object.prototype.borderColor = '#5c4033';
-    fabric.Object.prototype.cornerSize = 12;
+    fabric.FabricObject.prototype.transparentCorners = false;
+    fabric.FabricObject.prototype.cornerColor = '#5c4033';
+    fabric.FabricObject.prototype.cornerStyle = 'circle';
+    fabric.FabricObject.prototype.borderColor = '#5c4033';
+    fabric.FabricObject.prototype.cornerSize = 12;
 
     return () => {
       canvas.dispose();
@@ -67,6 +69,7 @@ export default function ScrapbookEditor({ onCancel, onSave }) {
     });
     fabricRef.current.add(obj);
     fabricRef.current.setActiveObject(obj);
+    fabricRef.current.renderAll();
   };
 
   const handleImageUpload = async (e) => {
@@ -76,12 +79,11 @@ export default function ScrapbookEditor({ onCancel, onSave }) {
     const compressed = await compressImage(file);
     const reader = new FileReader();
 
-    reader.onload = (f) => {
+    reader.onload = async (f) => {
       const data = f.target.result;
-      fabric.Image.fromURL(data, (img) => {
-        img.scaleToWidth(300);
-        addObjectWithShadow(img);
-      });
+      const img = await fabric.FabricImage.fromURL(data);
+      img.scaleToWidth(300);
+      addObjectWithShadow(img);
     };
     reader.readAsDataURL(compressed);
   };
@@ -110,8 +112,11 @@ export default function ScrapbookEditor({ onCancel, onSave }) {
     if (active) {
       active.sendToBack();
       // Ensure texture stays at the very back
-      const texture = fabricRef.current.getObjects().find(obj => obj.selectable === false);
-      if (texture) texture.sendToBack();
+      const objects = fabricRef.current.getObjects();
+      const texture = objects[0]; // First object added was the texture
+      if (texture && texture.selectable === false) {
+        texture.sendToBack();
+      }
       fabricRef.current.renderAll();
     }
   };
@@ -120,6 +125,7 @@ export default function ScrapbookEditor({ onCancel, onSave }) {
     const active = fabricRef.current.getActiveObject();
     if (active) {
       fabricRef.current.remove(active);
+      fabricRef.current.renderAll();
     }
   };
 
@@ -131,10 +137,9 @@ export default function ScrapbookEditor({ onCancel, onSave }) {
       const dataURL = fabricRef.current.toDataURL({
         format: 'webp',
         quality: 0.8,
-        multiplier: 2, // High resolution export
+        multiplier: 2, 
       });
 
-      // Convert dataURL to blob
       const res = await fetch(dataURL);
       const blob = await res.blob();
       const fileName = `scrapbook-${Date.now()}.webp`;

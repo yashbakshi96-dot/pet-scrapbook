@@ -8,7 +8,7 @@ import Hero from './components/Hero';
 gsap.registerPlugin(ScrollTrigger);
 import FloatingGallery from './components/FloatingGallery';
 import GensparkBackground from './components/GensparkBackground';
-// import ScrapbookEditor from './components/ScrapbookEditor';
+import ScrapbookEditor from './components/ScrapbookEditor';
 
 function App() {
   const [images, setImages] = useState([]);
