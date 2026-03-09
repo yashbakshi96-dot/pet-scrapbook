@@ -8,8 +8,7 @@ import Hero from './components/Hero';
 gsap.registerPlugin(ScrollTrigger);
 import FloatingGallery from './components/FloatingGallery';
 import UploadButton from './components/UploadButton';
-
-import BackgroundPaws from './components/BackgroundPaws';
+import GensparkBackground from './components/GensparkBackground';
 
 function App() {
   const [images, setImages] = useState([]);
@@ -124,7 +123,7 @@ function App() {
   return (
     <>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <BackgroundPaws />
+        <GensparkBackground />
         <main>
           <Hero />
           {!isInitializing && (

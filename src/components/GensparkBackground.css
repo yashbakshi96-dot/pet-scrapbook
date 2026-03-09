@@ -1,0 +1,153 @@
+.genspark-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── Custom cursor ── */
+#gs-cursor {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  display: none; /* Only show if needed, but App has its own cursor context often */
+}
+
+/* ── Paw field ── */
+#gs-pawField {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.gs-paw {
+  position: absolute;
+  pointer-events: all;
+  transform-origin: 50% 88%;
+  opacity: 0.82;
+  will-change: transform;
+  transition: opacity .25s, filter .25s;
+}
+
+.gs-paw.alert {
+  opacity: 1 !important;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.25)) !important;
+}
+
+.gs-paw.swipe {
+  animation: gs-swipeAnim .38s cubic-bezier(.34, 1.56, .64, 1) forwards !important;
+}
+
+.gs-paw.caught {
+  animation: gs-caughtBounce .5s cubic-bezier(.34, 1.56, .64, 1) forwards !important;
+}
+
+@keyframes gs-idlePulse {
+  0%, 100% {
+    transform: rotate(var(--gs-rot)) scale(1);
+    opacity: var(--gs-base-op);
+  }
+  50% {
+    transform: rotate(var(--gs-rot)) scale(1.06);
+    opacity: calc(var(--gs-base-op) + .08);
+  }
+}
+
+@keyframes gs-swipeAnim {
+  0% { transform: var(--gs-base-tf) rotate(0deg) scale(1) }
+  40% { transform: var(--gs-base-tf) rotate(38deg) scale(1.55) }
+  70% { transform: var(--gs-base-tf) rotate(-8deg) scale(1.2) }
+  100% { transform: var(--gs-base-tf) rotate(0deg) scale(1) }
+}
+
+@keyframes gs-caughtBounce {
+  0% { transform: var(--gs-base-tf) scale(1) }
+  30% { transform: var(--gs-base-tf) scale(2.1) rotate(18deg) }
+  60% { transform: var(--gs-base-tf) scale(.88) rotate(-4deg) }
+  100% { transform: var(--gs-base-tf) scale(1) rotate(0deg) }
+}
+
+/* ── Yarn ── */
+.gs-prey {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  will-change: transform;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.18));
+  transition: filter .2s;
+}
+
+.gs-prey.chased {
+  filter: drop-shadow(0 4px 14px rgba(180,80,30,.55));
+}
+
+/* ── Ripple ── */
+.gs-ripple {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(circle, rgba(190,150,100,.35) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0);
+  animation: gs-rippleOut .7s ease-out forwards;
+}
+
+@keyframes gs-rippleOut {
+  to { transform: translate(-50%, -50%) scale(4.5); opacity: 0 }
+}
+
+/* ── Sparkle ── */
+.gs-sparkle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 6;
+  animation: gs-sparkleFly .65s ease-out forwards;
+}
+
+@keyframes gs-sparkleFly {
+  0% { transform: translate(0, 0) scale(1); opacity: 1 }
+  100% { transform: translate(var(--gs-dx), var(--gs-dy)) scale(0); opacity: 0 }
+}
+
+/* ── Catch text ── */
+.gs-catch-text {
+  position: fixed;
+  pointer-events: none;
+  z-index: 15;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #5a3010;
+  text-shadow: 0 2px 0 rgba(255,255,255,.6), 0 0 14px rgba(240,180,80,.7);
+  animation: gs-catchTextAnim .9s ease-out forwards;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+@keyframes gs-catchTextAnim {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(.5) }
+  40% { opacity: 1; transform: translate(-50%, -130%) scale(1.25) }
+  100% { opacity: 0; transform: translate(-50%, -220%) scale(.95) }
+}
+
+/* ── Mouse trail ── */
+.gs-trail-paw {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2;
+  animation: gs-trailFade .8s ease-out forwards;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes gs-trailFade {
+  0% { opacity: .55; transform: translate(-50%, -50%) scale(.45) }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2) }
+}
+
