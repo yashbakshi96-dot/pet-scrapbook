@@ -77,18 +77,44 @@ export default function GensparkBackground() {
     let yarnColorIdx = 0;
     const yarnSVG = (size) => {
       const c = YARN_COLORS[yarnColorIdx++ % YARN_COLORS.length];
+      const id = `gs-yg${yarnColorIdx}`;
       return `
-        <svg width="${size}" height="${size}" viewBox="0 0 80 80">
+        <svg width="${size}" height="${size}" viewBox="0 0 100 100">
           <defs>
-            <radialGradient id="gs-yg${yarnColorIdx}" cx="38%" cy="35%" r="60%">
-              <stop offset="0%" stop-color="${c.hi}"/>
-              <stop offset="100%" stop-color="${c.base}"/>
+            <radialGradient id="${id}" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="${c.hi}" />
+              <stop offset="100%" stop-color="${c.base}" />
             </radialGradient>
+            <filter id="fuzz${id}" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+            </filter>
           </defs>
-          <circle cx="40" cy="40" r="36" fill="url(#gs-yg${yarnColorIdx})"/>
-          <ellipse cx="40" cy="40" rx="36" ry="14" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2.5"/>
-          <ellipse cx="40" cy="40" rx="14" ry="36" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="2"/>
-          <path d="M70 26 Q82 18 78 10 Q74 4 68 8" fill="none" stroke="${c.hi}" stroke-width="2.5" stroke-linecap="round"/>
+          
+          <!-- Shadow -->
+          <circle cx="52" cy="52" r="40" fill="rgba(0,0,0,0.15)" />
+          
+          <!-- Core Ball -->
+          <circle cx="50" cy="50" r="40" fill="url(#${id})" filter="url(#fuzz${id})" />
+          
+          <!-- Complex Thread Wraps for depth -->
+          <g stroke="rgba(255,255,255,0.15)" stroke-width="1.5" fill="none">
+            <ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(30 50 50)"/>
+            <ellipse cx="50" cy="50" rx="40" ry="12" transform="rotate(-45 50 50)"/>
+            <ellipse cx="50" cy="50" rx="12" ry="40" transform="rotate(15 50 50)"/>
+            <ellipse cx="50" cy="50" rx="20" ry="40" transform="rotate(75 50 50)"/>
+          </g>
+          
+          <!-- Overlapping "fuzzy" threads -->
+          <path d="M20 40 Q50 20 80 40" stroke="rgba(0,0,0,0.05)" stroke-width="3" fill="none" transform="rotate(10 50 50)"/>
+          <path d="M15 60 Q50 80 85 60" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none" transform="rotate(-20 50 50)"/>
+          
+          <!-- High-light threads -->
+          <path d="M35 30 Q50 45 65 30" stroke="${c.hi}" stroke-width="1.5" opacity="0.6" fill="none" />
+          
+          <!-- Loose tail -->
+          <path d="M80 50 C 95 40, 105 70, 90 85" stroke="${c.hi}" stroke-width="3" stroke-linecap="round" fill="none" />
+          <circle cx="90" cy="85" r="2" fill="${c.base}" />
         </svg>
       `;
     };
@@ -117,20 +143,11 @@ export default function GensparkBackground() {
       }
     };
 
-    const CATCH_MSGS = ['🧶 Got it!', '✂️ Snipped!', '🎀 Mine!', '🧶 Yoink!', '🐾 Caught!', '✨ Pounced!'];
-    const showCatchText = (x, y) => {
-      if (!containerRef.current) return;
-      const t = document.createElement('div');
-      t.className = 'gs-catch-text';
-      t.textContent = CATCH_MSGS[Math.floor(rand(0, CATCH_MSGS.length))];
-      t.style.cssText = `left:${x}px;top:${y}px`;
-      containerRef.current.appendChild(t);
-      t.addEventListener('animationend', () => t.remove());
-    };
+    // No more catch text popups as requested
 
     // Initialize Paws
     const pawData = [];
-    const numPaws = 150; // Restored to the original preferred density
+    const numPaws = 270; // Increased by 80% (150 * 1.8 = 270)
     for (let i = 0; i < numPaws; i++) {
       const el = document.createElement('div');
       el.className = 'gs-paw';
@@ -153,23 +170,23 @@ export default function GensparkBackground() {
 
     // Initialize Yarn
     const preyList = [];
-    // Increase yarn balls and scatter them all over
-    for (let i = 0; i < 12; i++) {
+    // Decreased yarn balls by 50% (12 -> 6)
+    for (let i = 0; i < 6; i++) {
       const el = document.createElement('div');
       el.className = 'gs-prey';
-      const size = rand(42, 68);
+      const size = rand(50, 75); // Slightly larger for better detail
       el.innerHTML = yarnSVG(size);
       el.style.width = el.style.height = size + 'px';
       containerRef.current.appendChild(el);
       preyList.push({ 
         el, size, 
         x: rand(80, W - 80), 
-        y: rand(80, H > 800 ? H - 80 : 2000), // Initial guess if H is small
-        vx: rand(-1.2, 1.2), 
-        vy: rand(-1.2, 1.2), 
+        y: rand(80, H > 800 ? H - 80 : 2000),
+        vx: rand(-1.5, 1.5), 
+        vy: rand(-1.5, 1.5), 
         wobble: rand(0, Math.PI * 2), 
-        wobbleSpeed: rand(0.02, 0.04), 
-        mouseAttr: rand(0.01, 0.02), 
+        wobbleSpeed: rand(0.015, 0.03), // Slower, more "weighted" wobble
+        mouseAttr: rand(0.012, 0.025), 
         catchCooldown: 0 
       });
     }
@@ -201,23 +218,22 @@ export default function GensparkBackground() {
           p.vy += dym / dm * f;
         }
         
-        p.vx += rand(-0.08, 0.08) * (dt / 16);
-        p.vy += rand(-0.08, 0.08) * (dt / 16);
+        // Slightly more subtle wander for "weighted" yarn feel
+        p.vx += rand(-0.06, 0.06) * (dt / 16);
+        p.vy += rand(-0.06, 0.06) * (dt / 16);
         const spd = Math.hypot(p.vx, p.vy);
-        if (spd > 2.8) { p.vx = p.vx / spd * 2.8; p.vy = p.vy / spd * 2.8; }
+        if (spd > 2.2) { p.vx = p.vx / spd * 2.2; p.vy = p.vy / spd * 2.2; }
         
         p.x += p.vx * (dt / 16);
         p.y += p.vy * (dt / 16);
         
-        // Dynamic boundaries
         if (p.x < 10) { p.x = 10; p.vx = Math.abs(p.vx); }
         if (p.x > W - p.size - 10) { p.x = W - p.size - 10; p.vx = -Math.abs(p.vx); }
         if (p.y < 10) { p.y = 10; p.vy = Math.abs(p.vy); }
         if (p.y > H - p.size - 10) { p.y = H - p.size - 10; p.vy = -Math.abs(p.vy); }
         
-        const bob = Math.sin(p.wobble) * 3.5;
-        // Optimization: Use translate for smoother performance
-        p.el.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.wobble * 55}deg) translateY(${bob}px)`;
+        const bob = Math.sin(p.wobble) * 4;
+        p.el.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.wobble * 45}deg) translateY(${bob}px)`;
 
         let chased = false;
         pawData.forEach(pw => {
@@ -273,7 +289,7 @@ export default function GensparkBackground() {
             pw.swipeCooldown = 1300;
             spawnSparkles(pcx, pcy, pw.color, 14);
             spawnRippleAt(pcx, pcy);
-            showCatchText(pcx, pcy);
+            // showCatchText(pcx, pcy);  <-- Removed catch text as requested
           }
         } else if (pw.alerted) {
           pw.alerted = false;
