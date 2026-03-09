@@ -148,11 +148,23 @@ html.lenis body {
 }
 
 @media (max-width: 768px) {
-  .lightbox-overlay {
-    padding: 20px;
+  .empty-state {
+    font-size: 1.2rem;
+    padding: 0 2rem;
+    text-align: center;
   }
+
+  .lightbox-overlay {
+    padding: 15px;
+  }
+  
+  .lightbox-content {
+    max-width: 95vw;
+  }
+
   .lightbox-close {
-    top: -50px;
-    right: 0;
+    top: -45px;
+    right: 5px;
+    font-size: 1.5rem;
   }
 }

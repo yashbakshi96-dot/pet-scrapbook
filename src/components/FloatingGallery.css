@@ -71,3 +71,26 @@
 .gallery-item:hover .gallery-image {
   transform: scale(1.1);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+  .floating-gallery {
+    padding: 3rem 1rem;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr); /* Force 2 columns on mobile */
+    grid-auto-rows: 180px; /* Smaller rows for mobile */
+    gap: 1rem;
+  }
+
+  /* Adjust spans for 2-column mobile layout */
+  .gallery-item.span-2x2 {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .gallery-item.span-wide {
+    grid-column: span 2;
+  }
+}

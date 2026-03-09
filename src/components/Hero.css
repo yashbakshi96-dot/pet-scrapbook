@@ -41,3 +41,18 @@
   transform-style: preserve-3d;
   will-change: transform;
 }
+
+/* Mobile Responsiveness for Hero */
+@media (max-width: 768px) {
+  .hero {
+    padding: 1rem;
+  }
+
+  .hero-title {
+    text-shadow: 
+      2px 2px 0px #C88C51,
+      4px 4px 0px #C88C51,
+      6px 6px 0px #8B5A2B,
+      8px 8px 0px #5C4033;
+  }
+}
