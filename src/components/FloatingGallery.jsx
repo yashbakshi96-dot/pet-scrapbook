@@ -3,9 +3,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './FloatingGallery.css';
 
+import UploadButton from './UploadButton';
+
 gsap.registerPlugin(ScrollTrigger);
 
-export default function FloatingGallery({ images = [], onImageClick }) {
+export default function FloatingGallery({ images = [], onImageClick, onUpload }) {
   const galleryRef = useRef(null);
   const itemsRef = useRef([]);
 
@@ -43,9 +45,6 @@ export default function FloatingGallery({ images = [], onImageClick }) {
     <section className="floating-gallery" ref={galleryRef}>
       <div className="gallery-grid">
         {images.map((imgSrc, index) => {
-          // Logic to avoid clumping: Use previous state to decide next size
-          // We use a simple rule: if the previous one was 'special', this one must be standard.
-          // Since map doesn't easily track previous results in a stateless way, we use index-based logic.
           const prevSeed = index > 0 ? (index - 1) * 1337 % 100 : 0;
           const prevWasSpecial = prevSeed > 70;
           
@@ -75,6 +74,14 @@ export default function FloatingGallery({ images = [], onImageClick }) {
             </div>
           );
         })}
+        {onUpload && (
+          <div 
+            ref={el => itemsRef.current[images.length] = el}
+            className="gallery-item span-1x1"
+          >
+            <UploadButton onUpload={onUpload} />
+          </div>
+        )}
       </div>
     </section>
   );

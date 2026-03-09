@@ -127,18 +127,12 @@ function App() {
         <main>
           <Hero />
           {!isInitializing && (
-            images.length > 0 ? (
-              <FloatingGallery 
-                images={images} 
-                onImageClick={(url) => setSelectedImage(url)} 
-              />
-            ) : (
-              <div className="empty-state">
-                <p>Your scrapbook is empty. Add your first memory!</p>
-              </div>
-            )
+            <FloatingGallery 
+              images={images} 
+              onImageClick={(url) => setSelectedImage(url)} 
+              onUpload={handleUpload}
+            />
           )}
-          <UploadButton onUpload={handleUpload} />
 
           {/* Lightbox / Modal View */}
           {selectedImage && (

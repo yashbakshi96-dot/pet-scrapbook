@@ -49,23 +49,30 @@ export default function UploadButton({ onUpload }) {
 
   return (
     <>
-      <button 
-        className={`upload-button ${isUploading ? 'uploading' : ''}`} 
+      <div 
+        className={`upload-card-wrapper ${isUploading ? 'uploading' : ''}`}
         onClick={handleClick}
-        aria-label="Add Memory"
-        disabled={isUploading}
       >
-        <span className="upload-icon-wrapper">
+        <div className="upload-card-inner">
           {isUploading ? (
-            <Loader2 size={24} className="upload-icon spinning" />
+            <div className="upload-loading-wrapper">
+              <Loader2 size={40} className="upload-icon spinning" />
+              <p>Uploading...</p>
+            </div>
           ) : (
-            <Plus size={24} className="upload-icon" />
+            <div className="paw-logo-wrapper">
+              <svg viewBox="0 0 100 100" className="paw-logo-svg">
+                <ellipse cx="50" cy="65" rx="28" ry="22" fill="currentColor"/>
+                <ellipse cx="22" cy="38" rx="11" ry="13" fill="currentColor"/>
+                <ellipse cx="42" cy="28" rx="10" ry="12" fill="currentColor"/>
+                <ellipse cx="62" cy="28" rx="10" ry="12" fill="currentColor"/>
+                <ellipse cx="80" cy="38" rx="11" ry="13" fill="currentColor"/>
+              </svg>
+              <span className="add-hint">+</span>
+            </div>
           )}
-        </span>
-        <span className="upload-text">
-          {isUploading ? 'Uploading...' : 'Add Memory'}
-        </span>
-      </button>
+        </div>
+      </div>
 
       <input
         type="file"

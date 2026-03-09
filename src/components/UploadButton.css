@@ -1,54 +1,82 @@
-.upload-button {
-  position: fixed;
-  bottom: 2.5rem;
-  right: 2.5rem;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1.25rem 0.75rem 0.75rem;
-  background-color: var(--color-text); /* Deep brown/black */
-  color: var(--color-bg); /* Cream/White text */
-  border: none;
-  border-radius: 9999px; /* Pill shape */
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  font-weight: 500;
+.upload-card-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1; /* Match standard gallery item aspect */
   cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  transition: all 0.4s var(--ease-out-expo);
-  overflow: hidden;
+  transition: all 0.5s var(--ease-out-expo);
+  z-index: 10;
 }
 
-.upload-icon-wrapper {
+.upload-card-inner {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-bg);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s var(--ease-out-expo);
+}
+
+.upload-card-wrapper:hover .upload-card-inner {
+  transform: translateY(-8px) scale(1.02);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+}
+
+.paw-logo-wrapper {
+  position: relative;
+  width: 50%;
+  height: 50%;
   color: var(--color-text);
+  opacity: 0.6;
+  transition: all 0.4s var(--ease-out-expo);
+}
+
+.upload-card-wrapper:hover .paw-logo-wrapper {
+  opacity: 1;
+  transform: scale(1.1) rotate(15deg);
+}
+
+.paw-logo-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.add-hint {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  transition: transform 0.4s var(--ease-out-expo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.upload-button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  background-color: #4A3A2C; /* Slightly lighter brown on hover */
+.upload-loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text);
 }
 
-.upload-button:hover .upload-icon-wrapper {
-  transform: rotate(90deg);
-}
-
-.upload-button:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.upload-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.8;
+.spinning {
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -56,6 +84,9 @@
   to { transform: rotate(360deg); }
 }
 
-.spinning {
-  animation: spin 1s linear infinite;
+/* Mobile specific card sizing adjustment if needed */
+@media (max-width: 768px) {
+  .upload-card-inner {
+    border-radius: 16px;
+  }
 }
