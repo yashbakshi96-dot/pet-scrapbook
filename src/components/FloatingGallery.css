@@ -55,10 +55,6 @@
   grid-row: span 2;
 }
 
-.gallery-item.span-wide {
-  grid-column: span 2;
-}
-
 .gallery-item:hover .item-inner {
   transform: scale(1.02);
 }
@@ -90,7 +86,8 @@
     grid-row: span 2;
   }
 
-  .gallery-item.span-wide {
+  .gallery-item.span-2x2 {
     grid-column: span 2;
+    grid-row: span 2;
   }
 }

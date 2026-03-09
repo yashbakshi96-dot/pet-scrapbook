@@ -52,8 +52,7 @@ export default function FloatingGallery({ images = [], onImageClick, onUpload })
           let sizeClass = '';
           
           if (!prevWasSpecial) {
-             if (sizeSeed > 85) sizeClass = 'span-2x2';
-             else if (sizeSeed > 70) sizeClass = 'span-wide';
+             if (sizeSeed > 75) sizeClass = 'span-2x2';
           }
 
           return (

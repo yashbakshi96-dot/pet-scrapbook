@@ -8,12 +8,13 @@ import Hero from './components/Hero';
 gsap.registerPlugin(ScrollTrigger);
 import FloatingGallery from './components/FloatingGallery';
 import UploadButton from './components/UploadButton';
-import GensparkBackground from './components/GensparkBackground';
+import ScrapbookEditor from './components/ScrapbookEditor';
 
 function App() {
   const [images, setImages] = useState([]);
   const [isInitializing, setIsInitializing] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   const fetchImages = async () => {
     setIsInitializing(true);
@@ -130,7 +131,17 @@ function App() {
             <FloatingGallery 
               images={images} 
               onImageClick={(url) => setSelectedImage(url)} 
-              onUpload={handleUpload}
+              onUpload={() => setIsEditorOpen(true)}
+            />
+          )}
+
+          {isEditorOpen && (
+            <ScrapbookEditor 
+              onCancel={() => setIsEditorOpen(false)}
+              onSave={(newUrl) => {
+                handleUpload(newUrl);
+                setIsEditorOpen(false);
+              }}
             />
           )}
 

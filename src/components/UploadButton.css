@@ -67,24 +67,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.upload-loading-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  color: var(--color-text);
-}
-
-.spinning {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* Mobile specific card sizing adjustment if needed */
+/* Mobile specific card sizing adjustment */
 @media (max-width: 768px) {
   .upload-card-inner {
     border-radius: 16px;
