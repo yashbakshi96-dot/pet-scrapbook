@@ -147,7 +147,7 @@ export default function GensparkBackground() {
 
     // Initialize Paws
     const pawData = [];
-    const numPaws = 810; // Extreme density (Increased by 3x from 270)
+    const numPaws = 675; // Adjusted to a slightly more balanced high density
     for (let i = 0; i < numPaws; i++) {
       const el = document.createElement('div');
       el.className = 'gs-paw';
